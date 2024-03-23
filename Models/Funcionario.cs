@@ -10,8 +10,10 @@ namespace assessment.Models
 {
     public int Id { get; set; }
     
-    [Required(ErrorMessage = "O nome é obrigatório.")]
+    [Required]
+    [StringLength(50, ErrorMessage = "O nome deve ter no máximo 50 caracteres.")]
     public string Nome { get; set; }
+
     
     [Required(ErrorMessage = "O endereço é obrigatório.")]
     public string Endereco { get; set; }
@@ -23,6 +25,8 @@ namespace assessment.Models
     public string Email { get; set; }
     
     [Required(ErrorMessage = "A data de nascimento é obrigatório.")]
+    [DataType(DataType.Date)]
+    [Display(Name = "Data de Nascimento")]
     public DateTime DataNascimento { get; set; }
     
     [Required(ErrorMessage = "O departamento é obrigatório.")]
