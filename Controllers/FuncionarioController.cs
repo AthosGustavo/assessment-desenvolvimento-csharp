@@ -52,24 +52,31 @@ namespace assessment.Controllers
             return View();
         }
 
-        
-
         // POST: Funcionario/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,Endereco,Telefone,Email,DataNascimento,DepartamentoId")] Funcionario funcionario)
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> Create([Bind("Id,Nome,Endereco,Telefone,Email,DataNascimento,DepartamentoId")] Funcionario funcionario)
+{
+    if (ModelState.IsValid)
+    {
+        _context.Add(funcionario);
+        await _context.SaveChangesAsync();
+        return RedirectToAction(nameof(Index));
+    }else
+    {
+        // Exibe os erros de validação do ModelState
+        var errors = ModelState.Values.SelectMany(v => v.Errors);
+        foreach (var error in errors)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(funcionario);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["DepartamentoId"] = new SelectList(_context.Departamento, "Id", "Id", funcionario.DepartamentoId);
-            return View(funcionario);
+            Console.WriteLine(error.ErrorMessage);
         }
+    }
+    ViewData["DepartamentoId"] = new SelectList(_context.Departamento, "Id", "Nome", funcionario.DepartamentoId);
+    return View(funcionario);
+}
 
         // GET: Funcionario/Edit/5
         public async Task<IActionResult> Edit(int? id)
